@@ -21,7 +21,7 @@ Windows: `.\dev.ps1 install` then `.\dev.ps1`.
 
 Sign in with the seeded demo account:
 
-> **rahul@sharma.test** / **password123**
+> **sunilbgadakari@gmail.com** / **password123**
 
 ## Scripts
 
