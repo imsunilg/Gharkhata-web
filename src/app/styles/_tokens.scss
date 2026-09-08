@@ -1,0 +1,45 @@
+// Ghar Khata design tokens — warm-dark, deliberately NOT generic fintech neon.
+// Category colours are FIXED and used identically in every chart, chip, and list.
+
+:root {
+  --bg: #14161c;
+  --bg-elevated: #191c24;
+  --surface: #1c2029;
+  --surface-raised: #262b36;
+  --border: #313644;
+
+  --text-primary: #f1f1f4;
+  --text-secondary: #9ba0af;
+  --text-tertiary: #676c7b;
+
+  --accent: #e8a33d;
+  --accent-strong: #f0b45c;
+  --accent-soft: rgba(232, 163, 61, 0.14);
+
+  --positive: #6fb98f;
+  --negative: #e2694b;
+  --info: #6e9fe0;
+
+  // Fixed category colours
+  --cat-food: #e8a33d;
+  --cat-housing: #6e9fe0;
+  --cat-transport: #c98a5e;
+  --cat-education: #7fb0a3;
+  --cat-utilities: #cf87a1;
+  --cat-shopping: #a480d0;
+  --cat-entertainment: #5fb0b5;
+  --cat-other: #7d8296;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --shadow-sheet: 0 -8px 40px rgba(0, 0, 0, 0.45);
+  --shadow-fab: 0 6px 24px rgba(232, 163, 61, 0.4);
+}
+
+$breakpoint-shell: 980px;
+$breakpoint-sheet: 640px;
