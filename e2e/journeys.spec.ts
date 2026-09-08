@@ -9,7 +9,7 @@ import { test, expect, request as pwRequest, APIRequestContext } from '@playwrig
  *   API + PostgreSQL up, then `npx playwright test`.
  */
 
-const API = 'http://localhost:4200/api/v1';
+const API = 'http://localhost:4495/api/v1';
 
 async function registerFamily(api: APIRequestContext, email: string) {
   const reg = await api.post(`${API}/auth/register`, {

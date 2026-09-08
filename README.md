@@ -14,7 +14,7 @@ components, OnPush throughout, custom SVG charts, warm-dark design tokens.
 
 ```bash
 npm install --legacy-peer-deps
-npm start                 # http://localhost:4200, proxies /api -> https://localhost:7001
+npm start                 # http://localhost:4495, proxies /api -> http://localhost:5195
 ```
 
 Windows: `.\dev.ps1 install` then `.\dev.ps1`.
@@ -27,7 +27,7 @@ Sign in with the seeded demo account:
 
 | | |
 |---|---|
-| `npm start` | dev server on :4200 with the API proxy |
+| `npm start` | dev server on :4495 with the API proxy |
 | `npm run build` | production build (≈83 kB gzip initial) |
 | `npm test` | Vitest unit tests (46) |
 | `npm run e2e` | Playwright journeys (needs API up; `npx playwright install chromium` once) |
@@ -58,6 +58,6 @@ styles/    _tokens.scss — the design system
 | Symptom | Fix |
 |---|---|
 | Login page on every refresh | expected only if there's no refresh token; otherwise the app silently restores the session on load |
-| `/api` calls 502 | the API isn't running on `https://localhost:7001` |
+| `/api` calls 502 | the API isn't running on `http://localhost:5195` |
 | `npm install` peer-dep errors | use `--legacy-peer-deps` (Angular 22 + tooling) |
 | Playwright: no browser | `npx playwright install chromium` |
