@@ -1,0 +1,92 @@
+@if (loading() && !data()) {
+  <p class="muted">Loading your month…</p>
+} @else if (data(); as d) {
+  <header class="head">
+    <h1>{{ greeting() }}</h1>
+    <p class="muted">{{ d.period?.month }} · your family ledger</p>
+  </header>
+
+  <div class="cards">
+    <div class="card gold">
+      <span class="k">Monthly Income</span>
+      <span class="v">{{ d.summary?.income | inr }}</span>
+    </div>
+    <div class="card">
+      <span class="k">Spent this month</span>
+      <span class="v">{{ d.summary?.expenses | inr }}</span>
+      @if (expenseDelta(); as delta) {
+        <span class="d" [class.bad]="delta.bad" [class.good]="!delta.bad">{{ delta.text }}</span>
+      }
+    </div>
+    <div class="card">
+      <span class="k">Saved this month</span>
+      <span class="v">{{ d.summary?.savings | inr }}</span>
+      @if (savingsDelta(); as delta) {
+        <span class="d" [class.bad]="delta.bad" [class.good]="!delta.bad">{{ delta.text }}</span>
+      }
+    </div>
+    <div class="card">
+      <span class="k">Savings rate</span>
+      <span class="v">{{ d.summary?.savingsRate }}%</span>
+    </div>
+  </div>
+
+  <div class="row2">
+    <section class="panel">
+      <h2>Where it went</h2>
+      <fem-donut-chart [data]="donut()" />
+    </section>
+    <section class="panel">
+      <h2>Insights</h2>
+      @if (insights().length) {
+        <ul class="insights">
+          @for (i of insights(); track i.id) {
+            <li>
+              <span class="sev" [attr.data-sev]="i.severity">{{ sev(i.severity ?? 'info') }}</span>
+              <span>{{ i.text }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="muted">Insights appear once there's a full month of data.</p>
+      }
+    </section>
+  </div>
+
+  <div class="row2">
+    <section class="panel">
+      <h2>Recent expenses</h2>
+      <ul class="recent">
+        @for (e of d.recentExpenses ?? []; track e.id) {
+          <li>
+            <span class="dot" [style.background]="e.categoryColour"></span>
+            <span class="t">{{ e.title }}</span>
+            <span class="m muted">{{ e.date | date: 'dd MMM' }}</span>
+            <span class="a">{{ e.amount | inr }}</span>
+          </li>
+        } @empty {
+          <li class="muted">No expenses yet — tap + to add one.</li>
+        }
+      </ul>
+    </section>
+    <section class="panel">
+      <h2>Member spend</h2>
+      <fem-bar-list [items]="memberBars()" />
+    </section>
+  </div>
+
+  @if ((d.upcomingBills ?? []).length) {
+    <section class="panel">
+      <h2>Due within 7 days</h2>
+      <ul class="recent">
+        @for (b of d.upcomingBills ?? []; track b.id) {
+          <li>
+            <span class="t">{{ b.name }}</span>
+            <span class="m muted">{{ b.dueDate | date: 'dd MMM' }}</span>
+            <span class="a">{{ b.amount | inr }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+}
