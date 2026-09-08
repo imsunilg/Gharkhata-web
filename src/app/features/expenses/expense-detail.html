@@ -1,0 +1,50 @@
+<div class="backdrop">
+  <button type="button" class="scrim" aria-label="Close" (click)="close()"></button>
+  <div class="sheet" role="dialog" aria-modal="true" (keydown.escape)="close()">
+    @if (expense(); as e) {
+      <div class="grabber"></div>
+      <div class="amount" [style.color]="categoryColour()">{{ e.amount | inr }}</div>
+      <h2>{{ e.title }}</h2>
+
+      <dl>
+        @if (e.categoryName) {
+          <div><dt>Category</dt><dd>{{ e.categoryName }}</dd></div>
+        }
+        <div><dt>Date</dt><dd>{{ e.date | date: 'dd MMM yyyy' }}</dd></div>
+        <div><dt>Paid by</dt><dd>{{ e.paidByMemberName }}</dd></div>
+        <div><dt>Payment</dt><dd>{{ e.paymentMethod }}</dd></div>
+        <div><dt>Visibility</dt><dd>{{ e.visibility }}</dd></div>
+        @if (e.notes) {
+          <div><dt>Notes</dt><dd>{{ e.notes }}</dd></div>
+        }
+        @if (e.isPersonalHidden) {
+          <div><dt></dt><dd class="muted">Personal expense — details are private to the person who recorded it.</dd></div>
+        }
+      </dl>
+
+      @if (history().length) {
+        <h3>Activity</h3>
+        <ul class="timeline">
+          @for (h of history(); track h.id) {
+            <li>
+              <span class="act">{{ h.action }}</span>
+              @if (h.oldValue || h.newValue) {
+                <span class="chg">{{ h.oldValue }} → {{ h.newValue }}</span>
+              }
+              <span class="when">{{ h.performedAt | date: 'dd MMM, HH:mm' }} · {{ memberName(h.performedByMemberId!) }}</span>
+            </li>
+          }
+        </ul>
+      }
+
+      @if (canEdit()) {
+        <div class="actions">
+          <button type="button" (click)="edit()">Edit</button>
+          <button type="button" class="danger" (click)="remove()">Delete</button>
+        </div>
+      }
+    } @else {
+      <p class="muted">Loading…</p>
+    }
+  </div>
+</div>

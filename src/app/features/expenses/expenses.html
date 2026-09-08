@@ -1,0 +1,87 @@
+<header class="head">
+  <h1>Expenses</h1>
+</header>
+
+<div class="filters">
+  <select [(ngModel)]="filters().categoryId" (ngModelChange)="applyFilters()" aria-label="Category">
+    <option value="">All categories</option>
+    @for (c of reference.activeCategories(); track c.id) {
+      <option [value]="c.id">{{ c.name }}</option>
+    }
+  </select>
+  <select [(ngModel)]="filters().memberId" (ngModelChange)="applyFilters()" aria-label="Member">
+    <option value="">All members</option>
+    @for (m of reference.members(); track m.id) {
+      <option [value]="m.id">{{ m.displayName }}</option>
+    }
+  </select>
+  <select [(ngModel)]="filters().paymentMethod" (ngModelChange)="applyFilters()" aria-label="Payment method">
+    <option value="">Any payment</option>
+    @for (pm of reference.paymentMethods(); track pm) {
+      <option [value]="pm">{{ pm }}</option>
+    }
+  </select>
+  <select [(ngModel)]="filters().sort" (ngModelChange)="applyFilters()" aria-label="Sort by">
+    <option value="date">Newest</option>
+    <option value="amount">Amount</option>
+    <option value="category">Category</option>
+  </select>
+</div>
+
+@if (loading()) {
+  <p class="muted">Loading…</p>
+} @else if (empty()) {
+  <div class="empty">
+    <p>No expenses match these filters.</p>
+    <p class="muted">Try clearing the category or member filter.</p>
+  </div>
+} @else {
+  <table class="desktop">
+    <thead>
+      <tr>
+        <th>Date</th><th>Description</th><th>Category</th><th>Paid by</th><th>Payment</th><th class="r">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (e of page()!.items; track e.id) {
+        <tr tabindex="0" (click)="selectedId.set(e.id!)" (keydown.enter)="selectedId.set(e.id!)">
+          <td>{{ e.date | date: 'dd MMM' }}</td>
+          <td>{{ e.title }}</td>
+          <td>
+            @if (e.categoryName) {
+              <span class="dot" [style.background]="categoryColour(e.categoryId)"></span>{{ e.categoryName }}
+            } @else {
+              <span class="muted">—</span>
+            }
+          </td>
+          <td>{{ e.paidByMemberName }}</td>
+          <td><span class="badge">{{ e.paymentMethod }}</span></td>
+          <td class="r money">{{ e.amount | inr }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="mobile">
+    @for (e of page()!.items; track e.id) {
+      <button type="button" class="card" (click)="selectedId.set(e.id!)">
+        <div class="top">
+          <span class="dot" [style.background]="categoryColour(e.categoryId)"></span>
+          <span class="t">{{ e.title }}</span>
+          <span class="money">{{ e.amount | inr }}</span>
+        </div>
+        <div class="meta">{{ e.date | date: 'dd MMM' }} · {{ e.paidByMemberName }} · {{ e.paymentMethod }}</div>
+      </button>
+    }
+  </div>
+
+  <nav class="pager">
+    <button type="button" [disabled]="page()!.page <= 1" (click)="goToPage(page()!.page - 1)">Previous</button>
+    <span>Page {{ page()!.page }} of {{ page()!.totalPages }} · {{ page()!.totalCount }} total</span>
+    <button type="button" [disabled]="page()!.page >= page()!.totalPages" (click)="goToPage(page()!.page + 1)">Next</button>
+  </nav>
+}
+
+@if (selectedId()) {
+  <fem-expense-detail [expenseId]="selectedId()!" (closed)="onDetailClosed($event)" />
+}

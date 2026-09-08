@@ -1,0 +1,99 @@
+.head h1 { font-size: 1.6rem; margin: 0 0 14px; }
+.muted { color: var(--text-tertiary); }
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.filters select {
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  padding: 0 14px;
+  font-size: 0.85rem;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.badge {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+.money { font-family: var(--font-display); font-variant-numeric: tabular-nums; }
+
+table.desktop {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+table.desktop th {
+  text-align: left;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+table.desktop td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+table.desktop tr { cursor: pointer; }
+table.desktop tbody tr:hover { background: var(--surface); }
+.r { text-align: right; }
+
+.mobile { display: none; flex-direction: column; gap: 8px; }
+.card {
+  text-align: left;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+.card .top { display: flex; align-items: center; gap: 8px; }
+.card .t { flex: 1; }
+.card .meta { color: var(--text-tertiary); font-size: 0.78rem; margin-top: 4px; }
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+.pager button {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+}
+.pager button:disabled { opacity: 0.4; }
+
+.empty {
+  text-align: center;
+  padding: 40px 0;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 720px) {
+  table.desktop { display: none; }
+  .mobile { display: flex; }
+}
