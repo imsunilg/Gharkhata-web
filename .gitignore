@@ -1,48 +1,49 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
 
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
-
-# IDEs and editors
-.idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# Visual Studio Code
-.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/mcp.json
 !.vscode/settings.json
 !.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/mcp.json
-.history/*
-
+# Compiled output
+# IDEs and editors
 # Miscellaneous
-/.angular/cache
+# Node
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# System files
+# Visual Studio Code
+# project
+*.launch
+*.sublime-workspace
+.DS_Store
+.angular/
+.c9/
+.classpath
+.history/*
+.idea/
+.project
 .sass-cache/
+.settings/
+.vscode/*
+/.angular/cache
+/bazel-out
 /connect.lock
 /coverage
+/dist
 /libpeerconnection.log
-testem.log
-/typings
-__screenshots__/
-
-# System files
-.DS_Store
-Thumbs.db
-
-# project
+/node_modules
+/out-tsc
 /src/app/core/api/generated/*.ts
+/src/app/core/api/swagger.json
+/tmp
+/typings
+Thumbs.db
+__screenshots__/
+dist/
+node_modules/
+npm-debug.log
+playwright-report/
 proxy.local.conf.json
+test-results/
+testem.log
+yarn-error.log

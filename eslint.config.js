@@ -5,7 +5,7 @@ const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 
 module.exports = defineConfig([
-  { ignores: ['src/app/core/api/generated/**', 'dist/**'] },
+  { ignores: ['src/app/core/api/generated/**', 'dist/**', 'e2e/**', 'playwright.config.ts'] },
   {
     files: ['**/*.ts'],
     extends: [

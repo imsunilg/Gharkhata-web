@@ -32,7 +32,7 @@ import { AuthService } from '../../core/auth/auth.service';
               formControlName="password"
               autocomplete="current-password"
             />
-            <button type="button" (click)="reveal.set(!reveal())" [attr.aria-label]="reveal() ? 'Hide password' : 'Show password'">
+            <button type="button" (click)="reveal.set(!reveal())" [attr.aria-label]="reveal() ? 'Hide' : 'Reveal'">
               {{ reveal() ? '🙈' : '👁' }}
             </button>
           </div>
