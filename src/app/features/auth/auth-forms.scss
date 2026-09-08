@@ -1,0 +1,77 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+input,
+select {
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  padding: 0 12px;
+  font-size: 0.95rem;
+}
+input:focus {
+  border-color: var(--accent);
+}
+.pw {
+  position: relative;
+}
+.pw input {
+  width: 100%;
+  padding-right: 44px;
+}
+.pw button {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  height: 36px;
+  width: 36px;
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+}
+.error {
+  color: var(--negative);
+  font-size: 0.78rem;
+}
+.submit {
+  height: 46px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #14161c;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.submit:disabled {
+  opacity: 0.6;
+}
+.links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  font-size: 0.82rem;
+}
+.links a {
+  color: var(--text-secondary);
+}
+.form-error {
+  background: rgba(226, 105, 75, 0.12);
+  border: 1px solid var(--negative);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+}
