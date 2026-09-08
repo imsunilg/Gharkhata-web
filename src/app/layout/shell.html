@@ -1,0 +1,73 @@
+@if (vp.isDesktop()) {
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark">₹</span>
+      <div>
+        <div class="name">Ghar Khata</div>
+        <div class="tag">Know where your money goes</div>
+      </div>
+    </div>
+    <nav>
+      @for (item of nav; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active">
+          <span class="ico" aria-hidden="true">{{ item.icon }}</span>{{ item.label }}
+        </a>
+        @if (item.path === '/debts') {<div class="divider"></div>}
+      }
+    </nav>
+  </aside>
+}
+
+<div class="main">
+  @if (vp.isDesktop()) {
+    <header class="topbar">
+      <input class="search" type="search" placeholder="Search expenses…" aria-label="Search expenses" />
+      <fem-quick-add-launcher variant="button" />
+      <a class="icon-btn" routerLink="/settings" aria-label="Notifications">🔔</a>
+      <div class="avatar" [title]="greetingName()">{{ greetingName().charAt(0) }}</div>
+    </header>
+  } @else {
+    <header class="mheader">
+      <span class="mark">₹</span>
+      <span class="name">Ghar Khata</span>
+      <span class="spacer"></span>
+      <a class="icon-btn" routerLink="/settings" aria-label="Notifications">🔔</a>
+    </header>
+  }
+
+  <main class="content">
+    <router-outlet />
+  </main>
+
+  @if (vp.isMobile()) {
+    <nav class="bottom-nav">
+      @for (item of primary; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active">
+          <span class="ico" aria-hidden="true">{{ item.icon }}</span>
+          <span class="lbl">{{ item.label }}</span>
+        </a>
+      }
+      <button type="button" class="more" (click)="moreOpen.set(true)" aria-label="More">
+        <span class="ico" aria-hidden="true">⋯</span><span class="lbl">More</span>
+      </button>
+    </nav>
+    <fem-quick-add-launcher variant="fab" />
+
+    @if (moreOpen()) {
+      <div class="sheet-backdrop">
+        <button type="button" class="scrim" aria-label="Close menu" (click)="moreOpen.set(false)"></button>
+        <div class="sheet" role="dialog" aria-modal="true" (keydown.escape)="moreOpen.set(false)">
+          <div class="grabber"></div>
+          @for (item of nav; track item.path) {
+            <a [routerLink]="item.path" (click)="moreOpen.set(false)">
+              <span class="ico" aria-hidden="true">{{ item.icon }}</span>{{ item.label }}
+            </a>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>
+
+<fem-quick-add-sheet />
+<fem-toast-host />
