@@ -22,6 +22,7 @@
   @if (vp.isDesktop()) {
     <header class="topbar">
       <input class="search" type="search" placeholder="Search expenses…" aria-label="Search expenses" />
+      <button type="button" class="icon-btn" (click)="voice.open()" aria-label="Voice entry">🎙</button>
       <fem-quick-add-launcher variant="button" />
       <a class="icon-btn" routerLink="/settings" aria-label="Notifications">🔔</a>
       <div class="avatar" [title]="greetingName()">{{ greetingName().charAt(0) }}</div>
@@ -70,4 +71,5 @@
 </div>
 
 <fem-quick-add-sheet />
+<fem-voice-sheet />
 <fem-toast-host />

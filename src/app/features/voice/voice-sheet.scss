@@ -1,0 +1,103 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.scrim {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: rgba(0, 0, 0, 0.6);
+}
+.sheet {
+  position: relative;
+  z-index: 1;
+  width: min(420px, calc(100vw - 24px));
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+@media (max-width: 640px) {
+  .backdrop { align-items: flex-end; }
+  .sheet { width: 100%; border-radius: 18px 18px 0 0; }
+}
+.grabber { width: 40px; height: 4px; background: var(--border); border-radius: 2px; align-self: center; }
+h2, h3 { margin: 0; }
+h3 { font-size: 0.8rem; color: var(--text-secondary); text-align: left; }
+.muted { color: var(--text-tertiary); font-size: 0.88rem; }
+.mic {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #14161c;
+  font-size: 2rem;
+  align-self: center;
+  box-shadow: var(--shadow-fab);
+}
+.ring {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  align-self: center;
+  background: var(--accent-soft);
+  border: 3px solid var(--accent);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 163, 61, 0.4); }
+  50% { box-shadow: 0 0 0 14px rgba(232, 163, 61, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ring { animation: none; }
+}
+.dur { font-family: var(--font-display); }
+.stop {
+  height: 42px;
+  padding: 0 20px;
+  border-radius: 10px;
+  border: 1px solid var(--negative);
+  background: none;
+  color: var(--negative);
+  align-self: center;
+}
+.bar { height: 4px; background: var(--surface-raised); border-radius: 2px; overflow: hidden; }
+.bar .fill { height: 100%; width: 40%; background: var(--accent); animation: slide 1s linear infinite; }
+@keyframes slide { from { margin-left: -40%; } to { margin-left: 100%; } }
+.transcript { font-family: var(--font-display); font-size: 1.05rem; text-align: left; }
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  text-align: left;
+}
+.grid > div {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.grid span { display: block; font-size: 0.7rem; color: var(--text-tertiary); }
+.grid .flag { border-color: var(--accent); background: var(--accent-soft); }
+.actions { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.actions button {
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+}
+.actions .primary { background: var(--accent); color: #14161c; border: none; font-weight: 600; }
+.link { background: none; border: none; color: var(--text-secondary); }
+.err { color: var(--negative); }

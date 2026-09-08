@@ -1,0 +1,58 @@
+@if (voice.isOpen()) {
+  <div class="backdrop">
+    <button type="button" class="scrim" aria-label="Close" (click)="close()"></button>
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Voice entry" (keydown.escape)="close()">
+      <div class="grabber"></div>
+
+      @switch (stage()) {
+        @case ('idle') {
+          <h2>Say your expense</h2>
+          <p class="muted">
+            e.g. "Spent 850 on petrol". We need the microphone to hear you — nothing is saved
+            until you confirm.
+          </p>
+          <button type="button" class="mic" (click)="start()" aria-label="Start recording">🎙</button>
+          <button type="button" class="link" (click)="openManual()">Type it instead</button>
+        }
+        @case ('permission') {
+          <p class="muted">Waiting for microphone permission…</p>
+        }
+        @case ('recording') {
+          <div class="ring" aria-hidden="true">🎙</div>
+          <p class="dur">{{ seconds() }}s / 30s</p>
+          <button type="button" class="stop" (click)="stop()">Stop</button>
+        }
+        @case ('uploading') {
+          <p class="muted">Transcribing…</p>
+          <div class="bar"><div class="fill"></div></div>
+        }
+        @case ('review') {
+          <h3>Transcript</h3>
+          <p class="transcript">"{{ transcript() }}"</p>
+          @if (draft(); as d) {
+            <div class="grid">
+              <div [class.flag]="lowConfidence('amount')"><span>Amount</span><b>{{ d.amount | inr }}</b></div>
+              <div [class.flag]="lowConfidence('category')"><span>Category</span><b>{{ d.categoryName ?? '—' }}</b></div>
+              <div [class.flag]="lowConfidence('title')"><span>Description</span><b>{{ d.title ?? '—' }}</b></div>
+              <div [class.flag]="lowConfidence('date')"><span>Date</span><b>{{ d.date ?? 'today' }}</b></div>
+            </div>
+          }
+          <div class="actions">
+            <button type="button" class="primary" [disabled]="saving()" (click)="confirm()">
+              {{ saving() ? 'Saving…' : 'Confirm & Save' }}
+            </button>
+            <button type="button" (click)="edit()">Edit</button>
+            <button type="button" class="link" (click)="close()">Cancel</button>
+          </div>
+        }
+        @case ('error') {
+          <p class="err">{{ errorText() }}</p>
+          <div class="actions">
+            <button type="button" (click)="start()">Retry</button>
+            <button type="button" class="primary" (click)="openManual()">Add manually</button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+}
