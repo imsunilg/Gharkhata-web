@@ -14,7 +14,7 @@ components, OnPush throughout, custom SVG charts, warm-dark design tokens.
 
 ```bash
 npm install --legacy-peer-deps
-npm start                 # http://localhost:4495, proxies /api -> http://localhost:5195
+npm start                 # http://localhost:4495, proxies /api -> http://localhost:5495
 ```
 
 Windows: `.\dev.ps1 install` then `.\dev.ps1`.
@@ -58,6 +58,6 @@ styles/    _tokens.scss — the design system
 | Symptom | Fix |
 |---|---|
 | Login page on every refresh | expected only if there's no refresh token; otherwise the app silently restores the session on load |
-| `/api` calls 502 | the API isn't running on `http://localhost:5195` |
+| `/api` calls 502 | the API isn't running on `http://localhost:5495` |
 | `npm install` peer-dep errors | use `--legacy-peer-deps` (Angular 22 + tooling) |
 | Playwright: no browser | `npx playwright install chromium` |

@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Runs against the local dev stack. Start PostgreSQL and the API first
  * (see ../GharKhata-api), then `npx playwright test` — this config starts
- * `ng serve` on :4495 which proxies /api to http://localhost:5195.
+ * `ng serve` on :4495 which proxies /api to http://localhost:5495.
  */
 export default defineConfig({
   testDir: './e2e',
