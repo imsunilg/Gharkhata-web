@@ -47,7 +47,7 @@ export class AuthService {
   /** Derived identity for headers/menus — never hard-code these in components. */
   readonly profile = computed<UserProfile>(() => {
     const u = this._user();
-    const name = u?.displayName?.trim() || 'Rahul Sharma';
+    const name = u?.displayName?.trim() || 'Sunil Gadakari';
     return {
       name,
       initials: initialsOf(name),

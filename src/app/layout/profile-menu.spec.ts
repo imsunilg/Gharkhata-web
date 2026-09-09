@@ -62,7 +62,7 @@ describe('ProfileMenu', () => {
     const text = el.querySelector('.last')?.textContent ?? '';
     expect(text).toContain('Last login:');
     expect(text).toMatch(/Last login: (Today|Yesterday|\d)/);
-    expect(el.querySelector('.nm')?.textContent).toContain('Rahul Sharma');
+    expect(el.querySelector('.nm')?.textContent).toContain('Sunil Gadakari');
     expect(el.querySelector('.rl')?.textContent).toContain('Family Owner');
   });
 
