@@ -44,6 +44,10 @@ export class AuthService {
   readonly isAuthenticated = computed(() => this._accessToken() !== null);
   readonly hasFamily = computed(() => !!this._user()?.familyId);
 
+  /** Platform role — 'SuperAdmin' or null. Independent of any family role. */
+  readonly platformRole = computed(() => this._user()?.platformRole ?? null);
+  readonly isSuperAdmin = computed(() => this._user()?.platformRole === 'SuperAdmin');
+
   /** Derived identity for headers/menus — never hard-code these in components. */
   readonly profile = computed<UserProfile>(() => {
     const u = this._user();
@@ -52,7 +56,9 @@ export class AuthService {
       name,
       initials: initialsOf(name),
       email: u?.email?.trim() || 'rahul@example.com',
-      role: u?.role ? `Family ${u.role}` : 'Family Owner',
+      role: u?.platformRole === 'SuperAdmin'
+        ? 'Super Admin'
+        : u?.role ? `Family ${u.role}` : 'Family Owner',
       lastLogin: formatLastLogin(this._lastLoginAt()),
     };
   });

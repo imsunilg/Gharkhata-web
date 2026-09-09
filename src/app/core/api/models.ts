@@ -30,6 +30,14 @@ export type NotificationDto = S['NotificationDto'];
 export type ReportResponse = S['ReportResponse'];
 export type MonthlyReviewResponse = S['MonthlyReviewResponse'];
 
+export type AdminDashboardResponse = S['AdminDashboardResponse'];
+export type AdminUserListItem = S['AdminUserListItem'];
+export type AdminUserDetail = S['AdminUserDetail'];
+export type AdminAuditEntry = S['AdminAuditEntry'];
+export type AdminFamilyListItem = S['AdminFamilyListItem'];
+export type AdminUserListItemPagedResult = S['AdminUserListItemPagedResult'];
+export type AdminAuditEntryPagedResult = S['AdminAuditEntryPagedResult'];
+
 export interface Paged<T> {
   items: T[];
   page: number;

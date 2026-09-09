@@ -14,6 +14,12 @@
         </a>
         @if (item.path === '/debts') {<div class="divider"></div>}
       }
+      @if (auth.isSuperAdmin()) {
+        <div class="divider"></div>
+        <a routerLink="/admin" routerLinkActive="active">
+          <span class="ico" aria-hidden="true">🛡</span>Administration
+        </a>
+      }
     </nav>
   </aside>
 }
@@ -63,6 +69,11 @@
           @for (item of nav; track item.path) {
             <a [routerLink]="item.path" (click)="moreOpen.set(false)">
               <span class="ico" aria-hidden="true">{{ item.icon }}</span>{{ item.label }}
+            </a>
+          }
+          @if (auth.isSuperAdmin()) {
+            <a routerLink="/admin" (click)="moreOpen.set(false)">
+              <span class="ico" aria-hidden="true">🛡</span>Administration
             </a>
           }
         </div>

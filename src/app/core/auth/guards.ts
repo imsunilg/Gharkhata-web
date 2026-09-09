@@ -26,7 +26,17 @@ export const familyGuard: CanActivateFn = async () => {
   const router = inject(Router);
   if (!auth.isAuthenticated()) return router.createUrlTree(['/auth/login']);
   await ensureUser(auth);
-  return auth.hasFamily() ? true : router.createUrlTree(['/auth/create-family']);
+  if (auth.hasFamily()) return true;
+  // A platform admin has no family — send them to their own area, not onboarding.
+  return router.createUrlTree([auth.isSuperAdmin() ? '/admin' : '/auth/create-family']);
+};
+
+export const platformAdminGuard: CanActivateFn = async () => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+  if (!auth.isAuthenticated()) return router.createUrlTree(['/auth/login']);
+  await ensureUser(auth);
+  return auth.isSuperAdmin() ? true : router.createUrlTree(['/dashboard']);
 };
 
 export const roleGuard = (roles: string[]): CanActivateFn => {

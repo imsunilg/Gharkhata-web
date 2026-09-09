@@ -78,7 +78,9 @@ export class LoginPage {
       const { email, password } = this.form.getRawValue();
       await firstValueFrom(this.auth.login(email, password));
       const me = await firstValueFrom(this.auth.loadMe());
-      await this.router.navigate([me.familyId ? '/dashboard' : '/auth/create-family']);
+      const target =
+        me.platformRole === 'SuperAdmin' ? '/admin' : me.familyId ? '/dashboard' : '/auth/create-family';
+      await this.router.navigate([target]);
     } catch (e) {
       this.formError.set((e as { userMessage?: string })?.userMessage ?? 'Sign in failed.');
     } finally {

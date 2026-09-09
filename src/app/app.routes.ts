@@ -1,10 +1,15 @@
 import { Routes } from '@angular/router';
-import { familyGuard, roleGuard } from './core/auth/guards';
+import { familyGuard, platformAdminGuard, roleGuard } from './core/auth/guards';
 
 export const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
+  },
+  {
+    path: 'admin',
+    canActivate: [platformAdminGuard],
+    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
   {
     path: '',

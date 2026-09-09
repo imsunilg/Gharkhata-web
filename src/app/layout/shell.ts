@@ -8,6 +8,7 @@ import { QuickAddLauncher } from '../features/quick-add/quick-add-launcher';
 import { QuickAddSheet } from '../features/quick-add/quick-add-sheet';
 import { VoiceSheet } from '../features/voice/voice-sheet';
 import { VoiceService } from '../features/voice/voice.service';
+import { AuthService } from '../core/auth/auth.service';
 
 @Component({
   selector: 'fem-shell',
@@ -19,6 +20,7 @@ import { VoiceService } from '../features/voice/voice.service';
 export class Shell {
   protected readonly vp = inject(ViewportService);
   protected readonly voice = inject(VoiceService);
+  protected readonly auth = inject(AuthService);
   protected readonly nav = NAV;
   protected readonly primary = NAV.filter((n) => n.primary);
   protected readonly moreOpen = signal(false);
