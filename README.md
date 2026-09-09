@@ -19,9 +19,10 @@ npm start                 # http://localhost:4495, proxies /api -> http://localh
 
 Windows: `.\dev.ps1 install` then `.\dev.ps1`.
 
-Sign in with the seeded demo account:
+Sign in with a seeded demo account:
 
-> **sunilbgadakari@gmail.com** / **password123**
+> **sunilbgadakari@gmail.com** / **password123** — family Owner
+> **demo@gharkhata.com** / **password123** — platform Super Admin (`/admin`)
 
 ## Scripts
 
@@ -29,7 +30,7 @@ Sign in with the seeded demo account:
 |---|---|
 | `npm start` | dev server on :4495 with the API proxy |
 | `npm run build` | production build (≈83 kB gzip initial) |
-| `npm test` | Vitest unit tests (46) |
+| `npm test` | Vitest unit tests (93) |
 | `npm run e2e` | Playwright journeys (needs API up; `npx playwright install chromium` once) |
 | `npm run lint` | ESLint (fem- selector prefix) |
 | `npm run gen:api` | regenerate `src/app/core/api/generated/schema.ts` from `swagger.json` |
@@ -40,7 +41,9 @@ Sign in with the seeded demo account:
 core/      auth, http interceptors, state stores, generated API types, ApiService
 shared/    presentational components (charts, toast), inrCurrency pipe, viewport
 features/  lazy routes: dashboard, expenses, income, budgets, bills, subscriptions,
-           goals, debts, reports, family, settings, quick-add, voice, auth
+           goals, debts, reports, family, settings, quick-add, voice, auth, admin
+admin/     Super-Admin area (/admin): dashboard, users table + dialogs, user
+           detail, families, audit logs — guarded by platformAdminGuard
 layout/    shell (desktop sidebar+topbar / mobile header+bottom-nav+FAB)
 styles/    _tokens.scss — the design system
 ```

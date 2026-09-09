@@ -1,0 +1,113 @@
+<a class="back" routerLink="/admin/users">← Back to users</a>
+
+@if (error()) {
+  <div class="panel err" role="alert">
+    Couldn't load this user. <button type="button" (click)="closeDialog()" routerLink="/admin/users">Back</button>
+  </div>
+} @else if (loading()) {
+  <div class="panel">Loading…</div>
+} @else if (user(); as u) {
+  <header class="head">
+    <div>
+      <h1>{{ u.displayName }}</h1>
+      <p class="sub">
+        {{ u.email }}
+        <span class="badge">{{ displayRole() }}</span>
+        <span class="badge s-{{ isDeleted() ? 'Deleted' : u.status }}">{{ isDeleted() ? 'Deleted' : u.status }}</span>
+      </p>
+    </div>
+    <div class="actions">
+      @if (!isDeleted()) {
+        <button type="button" (click)="open({ kind: 'edit' })">Edit</button>
+        <button type="button" (click)="open({ kind: 'role' })">Change role</button>
+        <button type="button" (click)="open({ kind: 'action', action: 'reset-password' })">Reset password</button>
+        @if (isActive()) {
+          <button type="button" (click)="open({ kind: 'action', action: 'deactivate' })">Deactivate</button>
+          <button type="button" (click)="open({ kind: 'action', action: 'suspend' })">Suspend</button>
+        } @else {
+          <button type="button" (click)="open({ kind: 'action', action: 'activate' })">Activate</button>
+        }
+        <button type="button" class="danger" (click)="open({ kind: 'action', action: 'delete' })">Delete</button>
+      } @else {
+        <button type="button" (click)="open({ kind: 'action', action: 'restore' })">Restore</button>
+      }
+    </div>
+  </header>
+
+  <div class="cols">
+    <section class="panel">
+      <h2>Profile</h2>
+      <dl>
+        <div><dt>Name</dt><dd>{{ u.displayName }}</dd></div>
+        <div><dt>Email</dt><dd>{{ u.email }}</dd></div>
+        <div><dt>User ID</dt><dd class="mono">{{ u.id }}</dd></div>
+      </dl>
+    </section>
+
+    <section class="panel">
+      <h2>Account</h2>
+      <dl>
+        <div><dt>Role</dt><dd>{{ displayRole() }}</dd></div>
+        <div><dt>Status</dt><dd>{{ isDeleted() ? 'Deleted' : u.status }}</dd></div>
+        <div><dt>Created</dt><dd>{{ u.createdAt | date: 'dd MMM y, HH:mm' }}</dd></div>
+        <div><dt>Last login</dt><dd>{{ u.lastLoginAt ? (u.lastLoginAt | date: 'dd MMM y, HH:mm') : 'Never' }}</dd></div>
+        <div><dt>Last updated</dt><dd>{{ u.updatedAt | date: 'dd MMM y, HH:mm' }}</dd></div>
+        <div><dt>Email verified</dt><dd>{{ u.emailVerifiedAt ? 'Yes' : 'No' }}</dd></div>
+        @if (u.suspendedAt) {
+          <div><dt>Suspended</dt><dd>{{ u.suspendedAt | date: 'dd MMM y' }}{{ u.suspensionReason ? ' — ' + u.suspensionReason : '' }}</dd></div>
+        }
+        @if (u.deletedAt) {
+          <div><dt>Deleted</dt><dd>{{ u.deletedAt | date: 'dd MMM y, HH:mm' }}</dd></div>
+        }
+      </dl>
+    </section>
+
+    <section class="panel">
+      <h2>Family</h2>
+      @if (u.familyId) {
+        <dl>
+          <div><dt>Family</dt><dd>{{ u.familyName }}</dd></div>
+          <div><dt>Family ID</dt><dd class="mono">{{ u.familyId }}</dd></div>
+          <div><dt>Family role</dt><dd>{{ u.familyRole }}</dd></div>
+        </dl>
+      } @else {
+        <p class="muted">Not a member of any family.</p>
+      }
+    </section>
+
+    <section class="panel activity">
+      <h2>Activity</h2>
+      @if ((u.recentActivity ?? []).length === 0) {
+        <p class="muted">No recorded activity.</p>
+      } @else {
+        <ul>
+          @for (a of u.recentActivity; track a.id) {
+            <li>
+              <span class="act">{{ a.action }}</span>
+              <span class="when">{{ a.timestamp | date: 'dd MMM y, HH:mm' }}</span>
+              @if (a.oldValue || a.newValue) {
+                <span class="delta">{{ a.oldValue ?? '—' }} → {{ a.newValue ?? '—' }}</span>
+              }
+              @if (a.actorEmail) { <span class="by">by {{ a.actorEmail }}</span> }
+              @if (a.reason) { <span class="reason">“{{ a.reason }}”</span> }
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+
+  @if (dialog(); as d) {
+    @switch (d.kind) {
+      @case ('edit') {
+        <fem-admin-user-form-dialog [user]="$any(u)" [families]="families()" (done)="onDialogDone()" (closed)="closeDialog()" />
+      }
+      @case ('role') {
+        <fem-admin-role-dialog [user]="$any(u)" [families]="families()" (done)="onDialogDone()" (closed)="closeDialog()" />
+      }
+      @case ('action') {
+        <fem-admin-action-dialog [user]="$any(u)" [action]="d.action" (done)="onDialogDone()" (closed)="closeDialog()" />
+      }
+    }
+  }
+}
