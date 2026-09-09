@@ -37,6 +37,11 @@ export type AdminAuditEntry = S['AdminAuditEntry'];
 export type AdminFamilyListItem = S['AdminFamilyListItem'];
 export type AdminUserListItemPagedResult = S['AdminUserListItemPagedResult'];
 export type AdminAuditEntryPagedResult = S['AdminAuditEntryPagedResult'];
+export type AssignableRole = S['AssignableRole'];
+export type CreateUserRequest = S['CreateUserRequest'];
+export type UpdateUserRequest = S['UpdateUserRequest'];
+export type ChangeUserRoleRequest = S['ChangeUserRoleRequest'];
+export type SuspendUserRequest = S['SuspendUserRequest'];
 
 export interface Paged<T> {
   items: T[];

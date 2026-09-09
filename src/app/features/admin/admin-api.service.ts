@@ -8,6 +8,9 @@ import type {
   AdminFamilyListItem,
   AdminUserDetail,
   AdminUserListItemPagedResult,
+  ChangeUserRoleRequest,
+  CreateUserRequest,
+  UpdateUserRequest,
 } from '../../core/api/models';
 
 /** Thin wrapper over /api/v1/admin — reuses the shared HttpClient + interceptors. */
@@ -42,5 +45,43 @@ export class AdminApiService {
 
   auditLogs(query: Record<string, unknown>): Observable<AdminAuditEntryPagedResult> {
     return this.http.get<AdminAuditEntryPagedResult>(`${this.base}/audit-logs`, { params: this.params(query) });
+  }
+
+  // ---- mutations (server enforces every guardrail + writes the audit row) ----
+
+  createUser(body: CreateUserRequest): Observable<AdminUserDetail> {
+    return this.http.post<AdminUserDetail>(`${this.base}/users`, body);
+  }
+
+  updateUser(id: string, body: UpdateUserRequest): Observable<AdminUserDetail> {
+    return this.http.put<AdminUserDetail>(`${this.base}/users/${id}`, body);
+  }
+
+  activate(id: string): Observable<AdminUserDetail> {
+    return this.http.patch<AdminUserDetail>(`${this.base}/users/${id}/activate`, {});
+  }
+
+  deactivate(id: string): Observable<AdminUserDetail> {
+    return this.http.patch<AdminUserDetail>(`${this.base}/users/${id}/deactivate`, {});
+  }
+
+  suspend(id: string, reason: string | null): Observable<AdminUserDetail> {
+    return this.http.patch<AdminUserDetail>(`${this.base}/users/${id}/suspend`, { reason });
+  }
+
+  restore(id: string): Observable<AdminUserDetail> {
+    return this.http.patch<AdminUserDetail>(`${this.base}/users/${id}/restore`, {});
+  }
+
+  changeRole(id: string, body: ChangeUserRoleRequest): Observable<AdminUserDetail> {
+    return this.http.patch<AdminUserDetail>(`${this.base}/users/${id}/role`, body);
+  }
+
+  resetPassword(id: string): Observable<void> {
+    return this.http.post<void>(`${this.base}/users/${id}/reset-password`, {});
+  }
+
+  deleteUser(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.base}/users/${id}`);
   }
 }

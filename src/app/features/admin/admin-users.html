@@ -1,0 +1,154 @@
+<header class="head">
+  <div>
+    <h1>Users</h1>
+    <p class="sub">{{ total().toLocaleString() }} user{{ total() === 1 ? '' : 's' }} across the platform.</p>
+  </div>
+  <button type="button" class="create" (click)="open({ kind: 'create' })">+ Create User</button>
+</header>
+
+<div class="toolbar">
+  <input
+    class="search"
+    type="search"
+    placeholder="Search name, email, user ID or family…"
+    [value]="filters().search"
+    (input)="onSearch($any($event.target).value)"
+    aria-label="Search users"
+  />
+
+  <select [ngModel]="filters().status" (ngModelChange)="applyFilter({ status: $event })" aria-label="Status">
+    @for (s of statuses; track s) { <option [value]="s">{{ s === 'All' ? 'All statuses' : s }}</option> }
+  </select>
+
+  <select [ngModel]="filters().role" (ngModelChange)="applyFilter({ role: $event })" aria-label="Role">
+    @for (r of roles; track r) { <option [value]="r">{{ r === 'All' ? 'All roles' : r }}</option> }
+  </select>
+
+  <select [ngModel]="filters().familyId" (ngModelChange)="applyFilter({ familyId: $event })" aria-label="Family">
+    <option value="">All families</option>
+    @for (f of families(); track f.id) { <option [value]="f.id">{{ f.name }}</option> }
+  </select>
+
+  <select [ngModel]="filters().dateRange" (ngModelChange)="applyFilter({ dateRange: $event })" aria-label="Created">
+    @for (d of dateRanges; track d.v) { <option [value]="d.v">{{ d.label }}</option> }
+  </select>
+</div>
+
+@if (error()) {
+  <div class="panel error" role="alert">
+    Couldn't load users. <button type="button" (click)="goToPage(filters().page)">Retry</button>
+  </div>
+} @else {
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th><button type="button" (click)="sortBy('name')">User</button></th>
+          <th class="col-md"><button type="button" (click)="sortBy('email')">Email</button></th>
+          <th>Role</th>
+          <th class="col-md">Family</th>
+          <th><button type="button" (click)="sortBy('status')">Status</button></th>
+          <th class="col-lg"><button type="button" (click)="sortBy('created')">Created</button></th>
+          <th class="col-lg"><button type="button" (click)="sortBy('lastLogin')">Last login</button></th>
+          <th class="actions-h">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (loading()) {
+          @for (i of [1,2,3,4,5,6]; track i) {
+            <tr class="skeleton"><td colspan="8"></td></tr>
+          }
+        } @else if (empty()) {
+          <tr><td colspan="8" class="empty">No users match these filters.</td></tr>
+        } @else {
+          @for (u of rows(); track u.id) {
+            <tr>
+              <td>
+                <a class="uname" [routerLink]="['/admin/users', u.id]">{{ u.displayName }}</a>
+              </td>
+              <td class="col-md muted">{{ u.email }}</td>
+              <td>
+                <span class="badge role">{{ u.platformRole ?? u.familyRole ?? '—' }}</span>
+              </td>
+              <td class="col-md muted">{{ u.familyName ?? '—' }}</td>
+              <td>
+                <span class="badge status s-{{ (u.isDeleted ? 'Deleted' : u.status) }}">
+                  {{ u.isDeleted ? 'Deleted' : u.status }}
+                </span>
+              </td>
+              <td class="col-lg muted">{{ u.createdAt | date: 'dd MMM y' }}</td>
+              <td class="col-lg muted">{{ u.lastLoginAt ? (u.lastLoginAt | date: 'dd MMM y') : 'Never' }}</td>
+              <td class="actions-c">
+                <div class="menu-anchor">
+                  <button
+                    type="button"
+                    class="kebab"
+                    (click)="toggleMenu(u.id!)"
+                    [attr.aria-expanded]="openMenu() === u.id"
+                    aria-haspopup="menu"
+                    aria-label="Actions"
+                  >⋮</button>
+                  @if (openMenu() === u.id) {
+                    <div class="menu" role="menu">
+                      <a role="menuitem" [routerLink]="['/admin/users', u.id]" (click)="openMenu.set(null)">View details</a>
+                      @if (!u.isDeleted) {
+                        <button role="menuitem" type="button" (click)="open({ kind: 'edit', user: u })">Edit</button>
+                        <button role="menuitem" type="button" (click)="open({ kind: 'role', user: u })">Change role</button>
+                        <button role="menuitem" type="button" (click)="open({ kind: 'action', user: u, action: 'reset-password' })">Reset password</button>
+                        @if (u.status === 'Active') {
+                          <button role="menuitem" type="button" (click)="open({ kind: 'action', user: u, action: 'deactivate' })">Deactivate</button>
+                          <button role="menuitem" type="button" (click)="open({ kind: 'action', user: u, action: 'suspend' })">Suspend</button>
+                        } @else {
+                          <button role="menuitem" type="button" (click)="open({ kind: 'action', user: u, action: 'activate' })">Activate</button>
+                        }
+                        <button role="menuitem" type="button" class="danger" (click)="open({ kind: 'action', user: u, action: 'delete' })">Delete</button>
+                      } @else {
+                        <button role="menuitem" type="button" (click)="open({ kind: 'action', user: u, action: 'restore' })">Restore</button>
+                      }
+                    </div>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (!loading() && !empty()) {
+    <footer class="pager">
+      <span>Showing {{ rangeStart() }}–{{ rangeEnd() }} of {{ total().toLocaleString() }}</span>
+      <label class="psize">
+        Per page
+        <select [ngModel]="filters().pageSize" (ngModelChange)="applyFilter({ pageSize: +$event })">
+          @for (n of pageSizes; track n) { <option [value]="n">{{ n }}</option> }
+        </select>
+      </label>
+      <nav class="pages" aria-label="Pagination">
+        <button type="button" (click)="goToPage(filters().page - 1)" [disabled]="filters().page <= 1">Previous</button>
+        @for (p of pageWindow(); track p) {
+          <button type="button" [class.active]="p === filters().page" (click)="goToPage(p)">{{ p }}</button>
+        }
+        <button type="button" (click)="goToPage(filters().page + 1)" [disabled]="filters().page >= totalPages()">Next</button>
+      </nav>
+    </footer>
+  }
+}
+
+@if (dialog(); as d) {
+  @switch (d.kind) {
+    @case ('create') {
+      <fem-admin-user-form-dialog [families]="families()" (done)="onDialogDone()" (closed)="closeDialog()" />
+    }
+    @case ('edit') {
+      <fem-admin-user-form-dialog [user]="d.user" [families]="families()" (done)="onDialogDone()" (closed)="closeDialog()" />
+    }
+    @case ('role') {
+      <fem-admin-role-dialog [user]="d.user" [families]="families()" (done)="onDialogDone()" (closed)="closeDialog()" />
+    }
+    @case ('action') {
+      <fem-admin-action-dialog [user]="d.user" [action]="d.action" (done)="onDialogDone()" (closed)="closeDialog()" />
+    }
+  }
+}
