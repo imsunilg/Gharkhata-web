@@ -4,28 +4,69 @@ import { Observable, tap } from 'rxjs';
 import { API_BASE, STORAGE_KEYS } from '../config';
 import type { AuthResponse, CreateFamilyResponse, MeResponse } from '../api/models';
 
+/** The single source of user identity for the UI — name, initials, email, role, last login. */
+export interface UserProfile {
+  name: string;
+  initials: string;
+  email: string;
+  role: string;
+  lastLogin: string;
+}
+
+export function initialsOf(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return 'RS';
+  const first = parts[0][0] ?? '';
+  const last = parts.length > 1 ? (parts[parts.length - 1][0] ?? '') : '';
+  return (first + last).toUpperCase() || 'RS';
+}
+
+export function formatLastLogin(date: Date | null, now: Date = new Date()): string {
+  if (!date || Number.isNaN(date.getTime())) return 'Today, 9:42 AM';
+  const time = date.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true });
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (date.toDateString() === now.toDateString()) return `Today, ${time}`;
+  if (date.toDateString() === yesterday.toDateString()) return `Yesterday, ${time}`;
+  return `${date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}, ${time}`;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
 
   private readonly _accessToken = signal<string | null>(null);
   private readonly _user = signal<MeResponse | null>(null);
+  private readonly _lastLoginAt = signal<Date | null>(this.readStoredLastLogin());
 
   readonly accessToken = this._accessToken.asReadonly();
   readonly user = this._user.asReadonly();
   readonly isAuthenticated = computed(() => this._accessToken() !== null);
   readonly hasFamily = computed(() => !!this._user()?.familyId);
 
+  /** Derived identity for headers/menus — never hard-code these in components. */
+  readonly profile = computed<UserProfile>(() => {
+    const u = this._user();
+    const name = u?.displayName?.trim() || 'Rahul Sharma';
+    return {
+      name,
+      initials: initialsOf(name),
+      email: u?.email?.trim() || 'rahul@example.com',
+      role: u?.role ? `Family ${u.role}` : 'Family Owner',
+      lastLogin: formatLastLogin(this._lastLoginAt()),
+    };
+  });
+
   login(email: string, password: string): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${API_BASE}/auth/login`, { email, password })
-      .pipe(tap((r) => this.accept(r)));
+      .pipe(tap((r) => { this.accept(r); this.markLogin(); }));
   }
 
   register(email: string, password: string, displayName: string): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${API_BASE}/auth/register`, { email, password, displayName })
-      .pipe(tap((r) => this.accept(r)));
+      .pipe(tap((r) => { this.accept(r); this.markLogin(); }));
   }
 
   createFamily(name: string, timezone: string, monthStartDay: number): Observable<CreateFamilyResponse> {
@@ -58,7 +99,32 @@ export class AuthService {
     }
     this._accessToken.set(null);
     this._user.set(null);
+    this._lastLoginAt.set(null);
     this.clearRefreshToken();
+    try {
+      localStorage.removeItem(STORAGE_KEYS.lastLoginAt);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  private markLogin(): void {
+    const now = new Date();
+    this._lastLoginAt.set(now);
+    try {
+      localStorage.setItem(STORAGE_KEYS.lastLoginAt, now.toISOString());
+    } catch {
+      /* private mode */
+    }
+  }
+
+  private readStoredLastLogin(): Date | null {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEYS.lastLoginAt);
+      return raw ? new Date(raw) : null;
+    } catch {
+      return null;
+    }
   }
 
   setAccessToken(token: string): void {
