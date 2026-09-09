@@ -79,6 +79,20 @@ export class AuthService {
       );
   }
 
+  changePassword(
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string,
+  ): Observable<void> {
+    // Reuses the shared HttpClient (correlation + auth interceptors apply).
+    // Nothing here is logged or stored — the payload lives only for the request.
+    return this.http.post<void>(`${API_BASE}/auth/change-password`, {
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    });
+  }
+
   loadMe(): Observable<MeResponse> {
     return this.http
       .get<MeResponse>(`${API_BASE}/auth/me`)

@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { ReferenceDataStore } from '../../core/state/reference-data.store';
+import { ChangePasswordDialog } from './change-password-dialog';
 
 @Component({
   selector: 'fem-settings',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [],
+  imports: [ChangePasswordDialog],
   template: `
     <h1>Settings</h1>
     <div class="cols">
@@ -32,7 +33,10 @@ import { ReferenceDataStore } from '../../core/state/reference-data.store';
           <div><dt>Role</dt><dd>{{ auth.user()?.role }}</dd></div>
           <div><dt>Family</dt><dd>{{ auth.user()?.familyName }}</dd></div>
         </dl>
-        <button type="button" class="danger" (click)="logout()">Sign out</button>
+        <div class="actions">
+          <button type="button" class="secondary" (click)="pwOpen.set(true)">Change password</button>
+          <button type="button" class="danger" (click)="logout()">Sign out</button>
+        </div>
       </section>
 
       <section class="panel">
@@ -44,6 +48,10 @@ import { ReferenceDataStore } from '../../core/state/reference-data.store';
         </p>
       </section>
     </div>
+
+    @if (pwOpen()) {
+      <fem-change-password-dialog (closed)="pwOpen.set(false)" />
+    }
   `,
   styles: [
     `
@@ -59,7 +67,10 @@ import { ReferenceDataStore } from '../../core/state/reference-data.store';
       dl > div { display: flex; gap: 12px; font-size: 0.88rem; }
       dt { width: 70px; color: var(--text-tertiary); }
       dd { margin: 0; }
-      .danger { margin-top: 14px; height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--negative); background: none; color: var(--negative); }
+      .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+      .actions button { height: 40px; padding: 0 16px; border-radius: 8px; font: inherit; font-size: 0.88rem; cursor: pointer; }
+      .secondary { border: 1px solid var(--border); background: var(--surface-raised); color: var(--text-primary); }
+      .danger { border: 1px solid var(--negative); background: none; color: var(--negative); }
     `,
   ],
 })
@@ -68,6 +79,7 @@ export class SettingsPage {
   protected readonly reference = inject(ReferenceDataStore);
   private readonly router = inject(Router);
   protected readonly _ = signal(0);
+  protected readonly pwOpen = signal(false);
 
   protected logout() {
     this.auth.logout();
